@@ -1,5 +1,4 @@
 var gulp           = require('gulp'),
-    wiredep 	   = require('wiredep').stream,
     gutil          = require('gulp-util' ),
     sass           = require('gulp-sass'),
     browserSync    = require('browser-sync'),
@@ -7,6 +6,7 @@ var gulp           = require('gulp'),
     uglify         = require('gulp-uglify'),
     cleanCSS       = require('gulp-clean-css'),
     rename         = require('gulp-rename'),
+    del            = require('del'),
     imagemin       = require('gulp-imagemin'),
     cache          = require('gulp-cache'),
     autoprefixer   = require('gulp-autoprefixer'),
@@ -16,16 +16,9 @@ var gulp           = require('gulp'),
 
 // Пользовательские скрипты проекта
 
-gulp.task('bower', function () {
-    gulp.src('./app/index.html')
-        .pipe(wiredep({
-            directory : "app/bower_components"
-        }))
-        .pipe(gulp.dest('./app'));
-});
-
 gulp.task('common-js', function() {
     return gulp.src([
+        // сюда добавлять свои скрипты
         'app/js/common.js',
     ])
         .pipe(concat('common.min.js'))
@@ -35,6 +28,7 @@ gulp.task('common-js', function() {
 
 gulp.task('js', ['common-js'], function() {
     return gulp.src([
+        // все плагины добавлять перед common
         'app/js/common.min.js', // Всегда в конце
     ])
         .pipe(concat('scripts.min.js'))
@@ -66,7 +60,7 @@ gulp.task('scss', function() {
 
 gulp.task('watch', ['scss', 'js', 'browser-sync'], function() {
     gulp.watch('app/scss/*.scss', ['scss']);
-    gulp.watch(['libs/*.js', 'app/js/common.js'], ['js']);
+    gulp.watch(['libs/*.js', 'app/js/*.js'], ['js']);
     gulp.watch('app/*.html', browserSync.reload);
 });
 
@@ -128,6 +122,7 @@ gulp.task('rsync', function() {
         }));
 });
 
+gulp.task('removedist', function() { return del.sync('dist'); });
 gulp.task('clearcache', function () { return cache.clearAll(); });
 
 gulp.task('default', ['watch']);
