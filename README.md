@@ -5,4 +5,9 @@ This is template for fast start your web-project
 P.S. before start project u need update package.json: ncu
 P.P.S. if u need updates: ncu -u or ncu -a
 3. install all packets from package.json: nmp i
-4. start project: gulp
+4. install bower: npm i -g bower
+5. start project: gulp
+
+For instal libs:
+1. bower i fotorama
+P.S. fotorama is the example lib
